@@ -1,6 +1,12 @@
 import type { Note } from '../../types/note';
 import type { User } from '../../types/user';
-import { api } from './api';
+import axios from 'axios';
+
+const proxyBaseURL = 'http://localhost:3000/api';
+
+const proxyApi = axios.create({
+  baseURL: proxyBaseURL,
+});
 
 export interface FetchNotesParams {
   page: number;
@@ -29,7 +35,7 @@ export const fetchNotes = async (
 ): Promise<FetchNotesResponse> => {
   const { tag, ...rest } = params;
   const queryParams = tag && tag !== 'all' ? { ...rest, tag } : rest;
-  const response = await api.get<FetchNotesResponse>('/notes', {
+  const response = await proxyApi.get<FetchNotesResponse>('/notes', {
     params: queryParams,
     headers: getHeaders(cookieStore),
   });
@@ -40,7 +46,7 @@ export const fetchNoteById = async (
   cookieStore: Awaited<ReturnType<typeof import('next/headers').cookies>>,
   noteId: string,
 ): Promise<Note> => {
-  const response = await api.get<Note>(`/notes/${noteId}`, {
+  const response = await proxyApi.get<Note>(`/notes/${noteId}`, {
     headers: getHeaders(cookieStore),
   });
   return response.data;
@@ -50,7 +56,7 @@ export const fetchNoteById = async (
 export const checkSession = async (
   cookieStore: Awaited<ReturnType<typeof import('next/headers').cookies>>,
 ): Promise<CheckSessionResponse> => {
-  const response = await api.get<CheckSessionResponse>('/auth/session', {
+  const response = await proxyApi.get<CheckSessionResponse>('/auth/session', {
     headers: getHeaders(cookieStore),
   });
   return response.data;
@@ -60,7 +66,7 @@ export const checkSession = async (
 export const getMe = async (
   cookieStore: Awaited<ReturnType<typeof import('next/headers').cookies>>,
 ): Promise<User> => {
-  const response = await api.get<User>('/users/me', {
+  const response = await proxyApi.get<User>('/users/me', {
     headers: getHeaders(cookieStore),
   });
   return response.data;

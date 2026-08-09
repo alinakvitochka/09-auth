@@ -3,6 +3,7 @@ import { api } from '../api';
 import { cookies } from 'next/headers';
 import { isAxiosError } from 'axios';
 import { logErrorResponse } from '../_utils/utils';
+import { forwardSetCookie } from '../_utils/cookies';
 
 export async function GET(request: NextRequest) {
   try {
@@ -24,7 +25,9 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    return NextResponse.json(res.data, { status: res.status });
+    const response = NextResponse.json(res.data, { status: res.status });
+    forwardSetCookie(res.headers, response);
+    return response;
   } catch (error) {
     if (isAxiosError(error)) {
       logErrorResponse(error.response?.data);
@@ -51,7 +54,9 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    return NextResponse.json(res.data, { status: res.status });
+    const response = NextResponse.json(res.data, { status: res.status });
+    forwardSetCookie(res.headers, response);
+    return response;
   } catch (error) {
     if (isAxiosError(error)) {
       logErrorResponse(error.response?.data);
