@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
     }
 
     const response = NextResponse.json(apiRes.data, { status: apiRes.status });
-    forwardSetCookie(apiRes.headers as unknown as Record<string, string | string[]>, response);
+    forwardSetCookie(apiRes.headers, response);
 
     return response;
   } catch (error) {

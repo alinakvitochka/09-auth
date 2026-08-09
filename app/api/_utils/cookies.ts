@@ -1,4 +1,3 @@
-import type { AxiosResponseHeaders } from 'axios';
 import { parseSetCookie } from 'cookie';
 import { NextResponse } from 'next/server';
 
@@ -7,10 +6,11 @@ import { NextResponse } from 'next/server';
  * Strips the Domain attribute so cookies work on localhost.
  */
 export function forwardSetCookie(
-  axiosHeaders: AxiosResponseHeaders,
+  axiosHeaders: unknown,
   response: NextResponse,
 ): void {
-  const setCookie = axiosHeaders['set-cookie'];
+  const headers = axiosHeaders as Record<string, string | string[] | undefined>;
+  const setCookie = headers['set-cookie'];
   if (!setCookie) return;
 
   const cookieArray = Array.isArray(setCookie) ? setCookie : [setCookie];
