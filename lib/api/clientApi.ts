@@ -1,6 +1,11 @@
 import type { Note } from '../../types/note';
 import type { User } from '../../types/user';
-import { api } from './api';
+import axios from 'axios';
+
+// Client calls go through the proxy routes which forward cookies to the browser
+const proxyApi = axios.create({
+  baseURL: '/api',
+});
 
 export interface FetchNotesParams {
   page: number;
@@ -68,28 +73,28 @@ export const fetchNotes = async (
 ): Promise<FetchNotesResponse> => {
   const { tag, ...rest } = params;
   const queryParams = tag && tag !== 'all' ? { ...rest, tag } : rest;
-  const response = await api.get<FetchNotesResponse>('/notes', {
+  const response = await proxyApi.get<FetchNotesResponse>('/notes', {
     params: queryParams,
   });
   return response.data;
 };
 
 export const fetchNoteById = async (noteId: string): Promise<Note> => {
-  const response = await api.get<Note>(`/notes/${noteId}`);
+  const response = await proxyApi.get<Note>(`/notes/${noteId}`);
   return response.data;
 };
 
 export const createNote = async (
   params: CreateNoteParams,
 ): Promise<Note> => {
-  const response = await api.post<Note>('/notes', params);
+  const response = await proxyApi.post<Note>('/notes', params);
   return response.data;
 };
 
 export const deleteNote = async (
   noteId: string,
 ): Promise<DeleteNoteResponse> => {
-  const response = await api.delete<DeleteNoteResponse>(`/notes/${noteId}`);
+  const response = await proxyApi.delete<DeleteNoteResponse>(`/notes/${noteId}`);
   return response.data;
 };
 
@@ -97,36 +102,36 @@ export const deleteNote = async (
 export const register = async (
   data: RegisterRequest,
 ): Promise<RegisterResponse> => {
-  const response = await api.post<RegisterResponse>('/auth/register', data);
+  const response = await proxyApi.post<RegisterResponse>('/auth/register', data);
   return response.data;
 };
 
 export const login = async (
   data: LoginRequest,
 ): Promise<LoginResponse> => {
-  const response = await api.post<LoginResponse>('/auth/login', data);
+  const response = await proxyApi.post<LoginResponse>('/auth/login', data);
   return response.data;
 };
 
 export const logout = async (): Promise<LogoutResponse> => {
-  const response = await api.post<LogoutResponse>('/auth/logout');
+  const response = await proxyApi.post<LogoutResponse>('/auth/logout');
   return response.data;
 };
 
 export const checkSession = async (): Promise<CheckSessionResponse> => {
-  const response = await api.get<CheckSessionResponse>('/auth/session');
+  const response = await proxyApi.get<CheckSessionResponse>('/auth/session');
   return response.data;
 };
 
 // Users
 export const getMe = async (): Promise<User> => {
-  const response = await api.get<User>('/users/me');
+  const response = await proxyApi.get<User>('/users/me');
   return response.data;
 };
 
 export const updateMe = async (
   data: UpdateMeRequest,
 ): Promise<User> => {
-  const response = await api.patch<User>('/users/me', data);
+  const response = await proxyApi.patch<User>('/users/me', data);
   return response.data;
 };
