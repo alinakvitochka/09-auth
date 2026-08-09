@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { api } from './api/api';
+import { forwardSetCookie } from './api/_utils/cookies';
 
 const privateRoutes = ['/profile', '/notes'];
 const publicRoutes = ['/sign-in', '/sign-up'];
@@ -31,6 +32,9 @@ export async function middleware(request: NextRequest) {
       });
       if (res.status === 200) {
         isAuth = true;
+        const response = NextResponse.next();
+        forwardSetCookie(res.headers, response);
+        return response;
       }
     } catch {
       isAuth = false;
