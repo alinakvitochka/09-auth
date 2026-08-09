@@ -1,6 +1,6 @@
 import { cookies } from 'next/headers';
 import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query';
-import { fetchNoteById } from '../../../../../lib/api/serverApi';
+import { fetchNoteById } from '../../../../lib/api/serverApi';
 import NotePreviewClient from './NotePreview.client';
 
 interface NotePreviewProps {

@@ -1,8 +1,7 @@
-export default function PrivateLayout({ children, modal }: { children: React.ReactNode; modal: React.ReactNode }) {
+export default function PrivateLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       {children}
-      {modal}
     </>
   );
 }
