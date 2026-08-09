@@ -1,0 +1,64 @@
+.userEmail {
+  color: white;
+  margin-right: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.logoutButton {
+  background: transparent;
+  border: 1px solid white;
+  color: white;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.logoutButton:hover {
+  background-color: white;
+  color: #333;
+}
+
+.navigationItem {
+  display: flex;
+  align-items: center;
+}
+
+.navigationLink {
+  text-decoration: none;
+  color: white;
+  font-size: 1rem;
+}
+
+.navigationLink:hover {
+  color: #ddd;
+}
+
+.loginLink {
+  color: #94a3b8;
+  font-weight: 500;
+  text-decoration: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  transition: color 0.2s, background-color 0.2s;
+}
+
+.loginLink:hover {
+  color: #e2e8f0;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.signupLink {
+  color: #fbbf24;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  transition: color 0.2s, background-color 0.2s;
+}
+
+.signupLink:hover {
+  color: #f59e0b;
+  background-color: rgba(251, 191, 36, 0.15);
+}
