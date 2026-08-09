@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { api } from '../../app/api/api';
-import { forwardSetCookie } from '../../app/api/_utils/cookies';
-import { checkSession } from './serverApi';
+import { api } from './api';
+import { forwardSetCookie } from './_utils/cookies';
+import { checkSession } from '../../lib/api/serverApi';
 
 export const privateRoutes = ['/profile', '/notes'];
 export const publicRoutes = ['/sign-in', '/sign-up'];
