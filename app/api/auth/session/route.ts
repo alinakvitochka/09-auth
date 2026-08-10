@@ -23,9 +23,9 @@ export async function GET() {
       });
 
       const setCookie = apiRes.headers['set-cookie'];
+
       if (setCookie) {
         const cookieArray = Array.isArray(setCookie) ? setCookie : [setCookie];
-
         for (const cookieStr of cookieArray) {
           const parsed = parseSetCookie(cookieStr);
 
@@ -33,11 +33,9 @@ export async function GET() {
             cookieStore.set(parsed.name, parsed.value, parsed);
           }
         }
-
         return NextResponse.json({ success: true }, { status: 200 });
       }
     }
-
     return NextResponse.json({ success: false }, { status: 200 });
   } catch (error) {
     if (isAxiosError(error)) {

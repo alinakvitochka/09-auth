@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { api } from '../../api';
 import { cookies } from 'next/headers';
-import { parseSetCookie } from 'cookie';
 import { isAxiosError } from 'axios';
 import { logErrorResponse } from '../../_utils/utils';
 
@@ -12,24 +11,14 @@ export async function POST() {
     const accessToken = cookieStore.get('accessToken')?.value;
     const refreshToken = cookieStore.get('refreshToken')?.value;
 
-    const apiRes = await api.post('auth/logout', null, {
+    await api.post('auth/logout', null, {
       headers: {
         Cookie: `accessToken=${accessToken}; refreshToken=${refreshToken}`,
       },
     });
 
-    const setCookie = apiRes.headers['set-cookie'];
-    if (setCookie) {
-      const cookieArray = Array.isArray(setCookie) ? setCookie : [setCookie];
-
-      for (const cookieStr of cookieArray) {
-        const parsed = parseSetCookie(cookieStr);
-
-        if (parsed.value) {
-          cookieStore.set(parsed.name, parsed.value, parsed);
-        }
-      }
-    }
+    cookieStore.delete('accessToken');
+    cookieStore.delete('refreshToken');
 
     return NextResponse.json({ message: 'Logged out successfully' }, { status: 200 });
   } catch (error) {

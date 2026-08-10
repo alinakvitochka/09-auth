@@ -1,18 +1,12 @@
 import type { Note } from '../../types/note';
 import type { User } from '../../types/user';
 import { cookies } from 'next/headers';
-import axios from 'axios';
-
-const proxyBaseURL = `${process.env.NEXT_PUBLIC_API_URL}/api`;
-
-const proxyApi = axios.create({
-  baseURL: proxyBaseURL,
-});
+import { api } from './api';
 
 // Server-side session check — returns full Axios response for proxy to access Set-Cookie headers
 export const checkServerSession = async () => {
   const cookieStore = await cookies();
-  const res = await proxyApi.get('/auth/session', {
+  const res = await api.get('/auth/session', {
     headers: {
       Cookie: cookieStore.toString(),
     },
@@ -47,7 +41,7 @@ export const fetchNotes = async (
 ): Promise<FetchNotesResponse> => {
   const { tag, ...rest } = params;
   const queryParams = tag && tag !== 'all' ? { ...rest, tag } : rest;
-  const response = await proxyApi.get<FetchNotesResponse>('/notes', {
+  const response = await api.get<FetchNotesResponse>('/notes', {
     params: queryParams,
     headers: getHeaders(cookieStore),
   });
@@ -58,7 +52,7 @@ export const fetchNoteById = async (
   cookieStore: Awaited<ReturnType<typeof import('next/headers').cookies>>,
   noteId: string,
 ): Promise<Note> => {
-  const response = await proxyApi.get<Note>(`/notes/${noteId}`, {
+  const response = await api.get<Note>(`/notes/${noteId}`, {
     headers: getHeaders(cookieStore),
   });
   return response.data;
@@ -68,7 +62,7 @@ export const fetchNoteById = async (
 export const checkSession = async (
   cookieStore: Awaited<ReturnType<typeof import('next/headers').cookies>>,
 ): Promise<CheckSessionResponse> => {
-  const response = await proxyApi.get<CheckSessionResponse>('/auth/session', {
+  const response = await api.get<CheckSessionResponse>('/auth/session', {
     headers: getHeaders(cookieStore),
   });
   return response.data;
@@ -78,7 +72,7 @@ export const checkSession = async (
 export const getMe = async (
   cookieStore: Awaited<ReturnType<typeof import('next/headers').cookies>>,
 ): Promise<User> => {
-  const response = await proxyApi.get<User>('/users/me', {
+  const response = await api.get<User>('/users/me', {
     headers: getHeaders(cookieStore),
   });
   return response.data;

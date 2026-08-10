@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { api } from '../../api';
 import { cookies } from 'next/headers';
-import { parseSetCookie } from 'cookie';
 import { logErrorResponse } from '../../_utils/utils';
 import { isAxiosError } from 'axios';
 
@@ -18,20 +17,6 @@ export async function GET(request: Request, { params }: Props) {
         Cookie: cookieStore.toString(),
       },
     });
-
-    const setCookie = res.headers['set-cookie'];
-    if (setCookie) {
-      const cookieArray = Array.isArray(setCookie) ? setCookie : [setCookie];
-
-      for (const cookieStr of cookieArray) {
-        const parsed = parseSetCookie(cookieStr);
-
-        if (parsed.value) {
-          cookieStore.set(parsed.name, parsed.value, parsed);
-        }
-      }
-    }
-
     return NextResponse.json(res.data, { status: res.status });
   } catch (error) {
     if (isAxiosError(error)) {
@@ -42,10 +27,7 @@ export async function GET(request: Request, { params }: Props) {
       );
     }
     logErrorResponse({ message: (error as Error).message });
-    return NextResponse.json(
-      { error: 'Internal Server Error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
@@ -59,20 +41,6 @@ export async function DELETE(request: Request, { params }: Props) {
         Cookie: cookieStore.toString(),
       },
     });
-
-    const setCookie = res.headers['set-cookie'];
-    if (setCookie) {
-      const cookieArray = Array.isArray(setCookie) ? setCookie : [setCookie];
-
-      for (const cookieStr of cookieArray) {
-        const parsed = parseSetCookie(cookieStr);
-
-        if (parsed.value) {
-          cookieStore.set(parsed.name, parsed.value, parsed);
-        }
-      }
-    }
-
     return NextResponse.json(res.data, { status: res.status });
   } catch (error) {
     if (isAxiosError(error)) {
@@ -83,10 +51,7 @@ export async function DELETE(request: Request, { params }: Props) {
       );
     }
     logErrorResponse({ message: (error as Error).message });
-    return NextResponse.json(
-      { error: 'Internal Server Error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
@@ -101,20 +66,6 @@ export async function PATCH(request: Request, { params }: Props) {
         Cookie: cookieStore.toString(),
       },
     });
-
-    const setCookie = res.headers['set-cookie'];
-    if (setCookie) {
-      const cookieArray = Array.isArray(setCookie) ? setCookie : [setCookie];
-
-      for (const cookieStr of cookieArray) {
-        const parsed = parseSetCookie(cookieStr);
-
-        if (parsed.value) {
-          cookieStore.set(parsed.name, parsed.value, parsed);
-        }
-      }
-    }
-
     return NextResponse.json(res.data, { status: res.status });
   } catch (error) {
     if (isAxiosError(error)) {
@@ -125,9 +76,6 @@ export async function PATCH(request: Request, { params }: Props) {
       );
     }
     logErrorResponse({ message: (error as Error).message });
-    return NextResponse.json(
-      { error: 'Internal Server Error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
