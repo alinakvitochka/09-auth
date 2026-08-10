@@ -1,5 +1,6 @@
 import type { Note } from '../../types/note';
 import type { User } from '../../types/user';
+import { cookies } from 'next/headers';
 import axios from 'axios';
 
 const proxyBaseURL = 'http://localhost:3000/api';
@@ -7,6 +8,21 @@ const proxyBaseURL = 'http://localhost:3000/api';
 const proxyApi = axios.create({
   baseURL: proxyBaseURL,
 });
+
+const getHeaders = (cookieStore: Awaited<ReturnType<typeof cookies>>) => ({
+  Cookie: cookieStore.toString(),
+});
+
+// Server-side session check — returns full Axios response for proxy to access Set-Cookie headers
+export const checkServerSession = async () => {
+  const cookieStore = await cookies();
+  const res = await proxyApi.get('/auth/session', {
+    headers: {
+      Cookie: cookieStore.toString(),
+    },
+  });
+  return res;
+};
 
 export interface FetchNotesParams {
   page: number;

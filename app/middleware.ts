@@ -1,9 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { Proxy } from './api/proxy';
+import { NextRequest } from 'next/server';
+import { proxy } from '../proxy';
 
 export async function middleware(request: NextRequest) {
-  const proxy = new Proxy(request);
-  return proxy.handle();
+  return proxy(request);
 }
 
 export const config = {
