@@ -9,10 +9,6 @@ const proxyApi = axios.create({
   baseURL: proxyBaseURL,
 });
 
-const getHeaders = (cookieStore: Awaited<ReturnType<typeof cookies>>) => ({
-  Cookie: cookieStore.toString(),
-});
-
 // Server-side session check — returns full Axios response for proxy to access Set-Cookie headers
 export const checkServerSession = async () => {
   const cookieStore = await cookies();
