@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { api } from '../api';
 import { cookies } from 'next/headers';
+import { parseSetCookie } from 'cookie';
 import { isAxiosError } from 'axios';
 import { logErrorResponse } from '../_utils/utils';
-import { forwardSetCookie } from '../_utils/cookies';
 
 export async function GET(request: NextRequest) {
   try {
@@ -25,9 +25,20 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    const response = NextResponse.json(res.data, { status: res.status });
-    forwardSetCookie(res.headers, response);
-    return response;
+    const setCookie = res.headers['set-cookie'];
+    if (setCookie) {
+      const cookieArray = Array.isArray(setCookie) ? setCookie : [setCookie];
+
+      for (const cookieStr of cookieArray) {
+        const parsed = parseSetCookie(cookieStr);
+
+        if (parsed.value) {
+          cookieStore.set(parsed.name, parsed.value, parsed);
+        }
+      }
+    }
+
+    return NextResponse.json(res.data, { status: res.status });
   } catch (error) {
     if (isAxiosError(error)) {
       logErrorResponse(error.response?.data);
@@ -54,9 +65,20 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    const response = NextResponse.json(res.data, { status: res.status });
-    forwardSetCookie(res.headers, response);
-    return response;
+    const setCookie = res.headers['set-cookie'];
+    if (setCookie) {
+      const cookieArray = Array.isArray(setCookie) ? setCookie : [setCookie];
+
+      for (const cookieStr of cookieArray) {
+        const parsed = parseSetCookie(cookieStr);
+
+        if (parsed.value) {
+          cookieStore.set(parsed.name, parsed.value, parsed);
+        }
+      }
+    }
+
+    return NextResponse.json(res.data, { status: res.status });
   } catch (error) {
     if (isAxiosError(error)) {
       logErrorResponse(error.response?.data);

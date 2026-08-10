@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { api } from '../../api';
+import { parseSetCookie } from 'cookie';
 import { isAxiosError } from 'axios';
 import { logErrorResponse } from '../../_utils/utils';
-import { forwardSetCookie } from '../../_utils/cookies';
 
 export async function GET() {
   try {
@@ -22,10 +22,22 @@ export async function GET() {
         },
       });
 
-      const response = NextResponse.json({ success: true }, { status: 200 });
-      forwardSetCookie(apiRes.headers, response);
-      return response;
+      const setCookie = apiRes.headers['set-cookie'];
+      if (setCookie) {
+        const cookieArray = Array.isArray(setCookie) ? setCookie : [setCookie];
+
+        for (const cookieStr of cookieArray) {
+          const parsed = parseSetCookie(cookieStr);
+
+          if (parsed.value) {
+            cookieStore.set(parsed.name, parsed.value, parsed);
+          }
+        }
+
+        return NextResponse.json({ success: true }, { status: 200 });
+      }
     }
+
     return NextResponse.json({ success: false }, { status: 200 });
   } catch (error) {
     if (isAxiosError(error)) {

@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
 import { api } from '../../api';
 import { cookies } from 'next/headers';
+import { parseSetCookie } from 'cookie';
 import { isAxiosError } from 'axios';
 import { logErrorResponse } from '../../_utils/utils';
-import { forwardSetCookie } from '../../_utils/cookies';
 
 export async function POST() {
   try {
@@ -18,10 +18,20 @@ export async function POST() {
       },
     });
 
-    const response = NextResponse.json({ message: 'Logged out successfully' }, { status: 200 });
-    forwardSetCookie(apiRes.headers, response);
+    const setCookie = apiRes.headers['set-cookie'];
+    if (setCookie) {
+      const cookieArray = Array.isArray(setCookie) ? setCookie : [setCookie];
 
-    return response;
+      for (const cookieStr of cookieArray) {
+        const parsed = parseSetCookie(cookieStr);
+
+        if (parsed.value) {
+          cookieStore.set(parsed.name, parsed.value, parsed);
+        }
+      }
+    }
+
+    return NextResponse.json({ message: 'Logged out successfully' }, { status: 200 });
   } catch (error) {
     if (isAxiosError(error)) {
       logErrorResponse(error.response?.data);

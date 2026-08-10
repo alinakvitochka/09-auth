@@ -3,7 +3,7 @@ import type { User } from '../../types/user';
 import { cookies } from 'next/headers';
 import axios from 'axios';
 
-const proxyBaseURL = 'http://localhost:3000/api';
+const proxyBaseURL = `${process.env.NEXT_PUBLIC_API_URL}/api`;
 
 const proxyApi = axios.create({
   baseURL: proxyBaseURL,
